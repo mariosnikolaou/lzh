@@ -408,9 +408,9 @@ int lzh_melt (type_fnc_write  pfnc_read,
 
     with_error = 0;
 
-    if ((buf = fnc_malloc (BUFSIZE)) == 0L)
+    if ((buf = (uchar *)fnc_malloc (BUFSIZE)) == 0L)
 	return (1);
-    if ((outbuf = fnc_malloc (DICSIZ)) == 0L)
+    if ((outbuf = (uchar *)fnc_malloc (DICSIZ)) == 0L)
     {
 	fnc_free (buf);
 	return (1);
@@ -422,13 +422,17 @@ int lzh_melt (type_fnc_write  pfnc_read,
         n = (uint) ((origsize > DICSIZ) ? DICSIZ : origsize);
         decode (n, outbuf);
 	if (with_error)
-	    return (1);
+	    break;
 	fnc_write (outbuf, n);
         origsize -= n;
 	if (with_error)
-	    return (1);
+	    break;
     }
-    return (0);
+
+	fnc_free(outbuf);
+	fnc_free(buf);
+
+	return (with_error ? 1 : 0);
 }
 
 #ifdef __TEST__
