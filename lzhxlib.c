@@ -113,8 +113,10 @@ static int make_table (int nchar, uchar *bitlen,
         start[i] >>= jutbits;
         weight[i] = 1U << (tablebits - i);
     }
-    while (i <= 16)
-        weight[i++] = 1U << (16 - i);
+    while (i <= 16) {
+        weight[i] = 1U << (16 - i);
+        i++;
+    }
 
     i = start[tablebits + 1] >> jutbits;
     if (i != (ushort) (1U << 16))
@@ -438,6 +440,7 @@ int lzh_melt (type_fnc_write  pfnc_read,
 #ifdef __TEST__
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 int read0 (void *p, int n) {return read (0, p, n);}
 int write1 (void *p, int n) {return write (1, p, n);}
 int main (void)

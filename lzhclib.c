@@ -884,9 +884,10 @@ int lzh_freeze (type_fnc_write  pfnc_read,
 #ifdef __TEST__
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 int read0 (void *p, int n) {return read (0, p, n);}
 int write1 (void *p, int n) {return write (1, p, n);}
-void main (void)
+int main (void)
 {
     long n;
     n = lseek (0, 0, 2);
