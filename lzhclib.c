@@ -787,7 +787,7 @@ static void get_next_match (void)
  */
 
 static struct struct_mem_list {
-    void_pointer *p;
+    void **p;
     int size;
 } mem_list[] = {
     { &text      , DICSIZ * 2 + MAXMATCH                           },

@@ -51,7 +51,6 @@ typedef unsigned long  ulong;   /* 32 bits or more */
 
 #define MAX_HASH_VAL (3 * DICSIZ + (DICSIZ / 512 + 1) * UCHAR_MAX)
 
-typedef void * void_pointer;
 typedef int (*type_fnc_read) (void *data, int n);
 typedef int (*type_fnc_write) (void *data, int n);
 
