@@ -54,18 +54,12 @@ typedef unsigned long  ulong;   /* 32 bits or more */
 typedef void * void_pointer;
 typedef int (*type_fnc_read) (void *data, int n);
 typedef int (*type_fnc_write) (void *data, int n);
-typedef void_pointer (*type_fnc_malloc) (unsigned n);
-typedef void (*type_fnc_free) (void *p);
 
 int lzh_freeze (type_fnc_read   pfnc_read,
-                type_fnc_write  pfnc_write,
-		type_fnc_malloc pfnc_malloc,
-		type_fnc_free   pfnc_free);
+                type_fnc_write  pfnc_write);
 
 int lzh_melt (type_fnc_read   pfnc_read,
               type_fnc_write  pfnc_write,
-	      type_fnc_malloc pfnc_malloc,
-	      type_fnc_free   pfnc_free,
 	      ulong origsize);
 
 #endif /* ifndef LZH_H */

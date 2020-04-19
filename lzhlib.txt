@@ -24,10 +24,6 @@ following is an example of a minimal compressor and decompressor.
         int read0 (void *p, int n) {return read (0, p, n);}
         int write1 (void *p, int n) {return write (1, p, n);}
 
-        /* My Memory functions */
-        void *mymalloc (unsigned n) {return malloc (n);}
-        void myfree (void *p) {free (p);}
-
         void main (void)
         {
             long n;
@@ -39,7 +35,7 @@ following is an example of a minimal compressor and decompressor.
             write (1, &n, sizeof (n));
 
             /* Now, Call the compression function */
-            lzh_freeze (read0, write1, mymalloc, myfree);
+            lzh_freeze (read0, write1);
         }
 
     Sample Decompressor:
@@ -51,10 +47,6 @@ following is an example of a minimal compressor and decompressor.
         int read0 (void *p, int n) {return read (0, p, n);}
         int write1 (void *p, int n) {return write (1, p, n);}
 
-        /* My Memory functions */
-        void *mymalloc (unsigned n) {return malloc (n);}
-        void myfree (void *p) {free (p);}
-
         void main (void)
         {
             long n;
@@ -62,7 +54,7 @@ following is an example of a minimal compressor and decompressor.
             read (0, &n, sizeof (n));
 
             /* Now, Call the decompression function */
-            lzh_melt (read0, write1, malloc, free, n);
+            lzh_melt (read0, write1, n);
         }
 
 The description of the library API is given in more detail below:
@@ -70,14 +62,10 @@ The description of the library API is given in more detail below:
     Prototypes:
 
         int lzh_freeze (type_fnc_read pfnc_read,
-                        type_fnc_write pfnc_write,
-                        type_fnc_malloc pfnc_malloc,
-                        type_fnc_free pfnc_free);
+                        type_fnc_write pfnc_write);
 
         int lzh_melt (type_fnc_read pfnc_read,
                       type_fnc_write pfnc_write,
-                      type_fnc_malloc pfnc_malloc,
-                      type_fnc_free pfnc_free,
                       unsigned long origsize);
 
     Remarks: "lzh_freeze" will perform an LZH compression on input
@@ -102,15 +90,5 @@ The description of the library API is given in more detail below:
                     the number of outputed bytes (or -1 if there is an
                     error).
 
-    fnc_malloc  a callback function that library will call when
-                    needing to allocate memory. "fnc_malloc" must
-                    return the address of the allocated memory or NULL
-                    if there is an error.
-
-    fnc_free    a callback function that library will call when
-                    needing to free a memory that was allocated using
-                    "fnc_malloc".
-
     origsize    the original number of bytes of the uncompressed
                      data.
-

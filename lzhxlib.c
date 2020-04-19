@@ -22,6 +22,8 @@
  *
  */
 
+#include <stdlib.h>
+
 #include "lzh.h"
 
 /*
@@ -30,8 +32,6 @@
 
 static type_fnc_read   fnc_read;
 static type_fnc_write  fnc_write;
-static type_fnc_malloc fnc_malloc;
-static type_fnc_free   fnc_free;
 static int with_error;
 
 #define BUFSIZE (1024 * 4)
@@ -396,8 +396,6 @@ static void decode (uint count, uchar buffer[])
 
 int lzh_melt (type_fnc_write  pfnc_read,
 	      type_fnc_read   pfnc_write,
-	      type_fnc_malloc pfnc_malloc,
-	      type_fnc_free   pfnc_free,
 	      ulong origsize)
 {
     int n;
@@ -405,16 +403,14 @@ int lzh_melt (type_fnc_write  pfnc_read,
 
     fnc_write   = pfnc_write;
     fnc_read	= pfnc_read;
-    fnc_malloc	= pfnc_malloc;
-    fnc_free	= pfnc_free;
 
     with_error = 0;
 
-    if ((buf = (uchar *)fnc_malloc (BUFSIZE)) == 0L)
+    if ((buf = (uchar *)malloc (BUFSIZE)) == 0L)
 	return (1);
-    if ((outbuf = (uchar *)fnc_malloc (DICSIZ)) == 0L)
+    if ((outbuf = (uchar *)malloc (DICSIZ)) == 0L)
     {
-	fnc_free (buf);
+	free (buf);
 	return (1);
     }
 
@@ -431,15 +427,14 @@ int lzh_melt (type_fnc_write  pfnc_read,
 	    break;
     }
 
-	fnc_free(outbuf);
-	fnc_free(buf);
+	free(outbuf);
+	free(buf);
 
 	return (with_error ? 1 : 0);
 }
 
 #ifdef __TEST__
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 int read0 (void *p, int n) {return read (0, p, n);}
 int write1 (void *p, int n) {return write (1, p, n);}
@@ -447,7 +442,7 @@ int main (void)
 {
     long n;
     read (0, &n, sizeof (n));
-    lzh_melt (read0, write1, malloc, free, n);
+    lzh_melt (read0, write1, n);
 }
 #endif
 

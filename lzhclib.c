@@ -22,6 +22,7 @@
  *
  */
 
+#include <stdlib.h>
 #include <string.h>
 
 #include "lzh.h"
@@ -37,8 +38,6 @@ static int outbufpos;
 
 static type_fnc_read   fnc_read;
 static type_fnc_write  fnc_write;
-static type_fnc_malloc fnc_malloc;
-static type_fnc_free   fnc_free;
 
 static int error_write;
 
@@ -808,10 +807,10 @@ static int allocate_memory (void)
     struct struct_mem_list * p = mem_list, *q = mem_list;
     while (p->size)
     {
-	if ((*(p->p) = fnc_malloc (p->size)) == 0L)
+	if ((*(p->p) = malloc (p->size)) == 0L)
 	{
 	    while (q != p)
-		fnc_free (*(q->p)), q++;
+		free (*(q->p)), q++;
 	    return (1);
 	}
 	p++;
@@ -823,13 +822,11 @@ static void release_memory (void)
 {
     struct struct_mem_list * p = mem_list;
     while (p->size)
-	fnc_free (*(p->p)), p++;
+	free (*(p->p)), p++;
 }
 
 int lzh_freeze (type_fnc_write  pfnc_read,
-		type_fnc_read   pfnc_write,
-		type_fnc_malloc pfnc_malloc,
-		type_fnc_free   pfnc_free)
+		type_fnc_read   pfnc_write)
 {
     int lastmatchlen;
     node lastmatchpos;
@@ -837,8 +834,6 @@ int lzh_freeze (type_fnc_write  pfnc_read,
     /* Additions */
     fnc_write   = pfnc_write;
     fnc_read	= pfnc_read;
-    fnc_malloc	= pfnc_malloc;
-    fnc_free	= pfnc_free;
     if (allocate_memory() != 0)
 	return (1);
     error_write = 0;
@@ -883,7 +878,6 @@ int lzh_freeze (type_fnc_write  pfnc_read,
 
 #ifdef __TEST__
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 int read0 (void *p, int n) {return read (0, p, n);}
 int write1 (void *p, int n) {return write (1, p, n);}
@@ -893,7 +887,7 @@ int main (void)
     n = lseek (0, 0, 2);
     write (1, &n, sizeof (n));
     lseek (0, 0, 0);
-    lzh_freeze (read0, write1, malloc, free);
+    lzh_freeze (read0, write1);
 }
 #endif
 
