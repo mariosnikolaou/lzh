@@ -17,28 +17,20 @@ following is an example of a minimal compressor and decompressor.
 
     Sample Compressor:
 
-        #ifdef __TURBOC__
-            #include <io.h>
-            #include <fcntl.h>
-        #else
-            #include <stdio.h>
-        #endif
+        #include <stdio.h>
         #include <stdlib.h>
 
         /* My I/O functions */
-        int read0 (void far *p, int n) {return read (0, p, n);}
-        int write1 (void far *p, int n) {return write (1, p, n);}
+        int read0 (void *p, int n) {return read (0, p, n);}
+        int write1 (void *p, int n) {return write (1, p, n);}
 
         /* My Memory functions */
         void *mymalloc (unsigned n) {return malloc (n);}
-        void myfree (void far *p) {free (p);}
+        void myfree (void *p) {free (p);}
 
         void main (void)
         {
             long n;
-          #ifdef __TURBOC__
-            setmode (0, O_BINARY); setmode (1, O_BINARY);
-          #endif
             /* Get the length of the input file */
             n = lseek (0, 0, 2);
             lseek (0, 0, 0);
@@ -52,28 +44,20 @@ following is an example of a minimal compressor and decompressor.
 
     Sample Decompressor:
 
-        #ifdef __TURBOC__
-            #include <io.h>
-            #include <fcntl.h>
-        #else
-            #include <stdio.h>
-        #endif
+        #include <stdio.h>
         #include <stdlib.h>
 
         /* My I/O functions */
-        int read0 (void far *p, int n) {return read (0, p, n);}
-        int write1 (void far *p, int n) {return write (1, p, n);}
+        int read0 (void *p, int n) {return read (0, p, n);}
+        int write1 (void *p, int n) {return write (1, p, n);}
 
         /* My Memory functions */
         void *mymalloc (unsigned n) {return malloc (n);}
-        void myfree (void far *p) {free (p);}
+        void myfree (void *p) {free (p);}
 
         void main (void)
         {
             long n;
-          #ifdef __TURBOC__
-            setmode (0, O_BINARY); setmode (1, O_BINARY);
-          #endif
             /* Get the original file length */
             read (0, &n, sizeof (n));
 

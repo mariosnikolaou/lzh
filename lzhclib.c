@@ -32,7 +32,7 @@
 
 #define OUTBUFSIZE (1024 * 4)
 
-static uchar far *outbuf;
+static uchar *outbuf;
 static int outbufpos;
 
 static type_fnc_read   fnc_read;
@@ -97,8 +97,8 @@ static void init_putbits (void)
 
 static int maketree_n, maketree_heapsize;
 static short maketree_heap[NC + 1];
-static ushort far *maketree_freq, far *maketree_sortptr, maketree_len_cnt[17];
-static uchar far *maketree_len;
+static ushort *maketree_freq, *maketree_sortptr, maketree_len_cnt[17];
+static uchar *maketree_len;
 static ushort left[2 * NC - 1], right[2 * NC - 1];
 
 static void count_len (int i)          /* call with i = root */
@@ -174,7 +174,7 @@ static void downheap (int i)
     maketree_heap[i] = k;
 }
 
-static void make_code (int maketree_n, uchar far *maketree_len, ushort far *code)
+static void make_code (int maketree_n, uchar *maketree_len, ushort *code)
 {
     int i;
     ushort start[18];
@@ -189,8 +189,8 @@ static void make_code (int maketree_n, uchar far *maketree_len, ushort far *code
 /*
  * make tree, calculate maketree_len[], return root
  */
-int make_tree (int nparm, ushort far *freqparm,
-		uchar far *lenparm, ushort far *codeparm)
+int make_tree (int nparm, ushort *freqparm,
+		uchar *lenparm, ushort *codeparm)
 {
     int i, j, k, avail;
 
@@ -253,9 +253,9 @@ int make_tree (int nparm, ushort far *freqparm,
     #define NPT NP
 #endif
 
-static uchar far *buf, far c_len[NC], far pt_len[NPT];
-static ushort far c_freq[2 * NC - 1], far c_code[NC],
-              far p_freq[2 * NP - 1], far pt_code[NPT],
+static uchar *buf, c_len[NC], pt_len[NPT];
+static ushort c_freq[2 * NC - 1], c_code[NC],
+              p_freq[2 * NP - 1], pt_code[NPT],
               t_freq[2 * NT - 1];
 
 static void count_t_freq (void)
@@ -524,10 +524,10 @@ static void huf_encode_end (void)
 
 typedef short node;
 
-static uchar far *text, far *childcount;
+static uchar *text, *childcount;
 static node pos, matchpos, avail,
-            far *position, far *parent,
-            far *prev, far *next;
+            *position, *parent,
+            *prev, *next;
 static int remainder, matchlen;
 
 #if MAXMATCH <= (UCHAR_MAX + 1)
@@ -609,7 +609,7 @@ static void split (node old)
 static void insert_node (void)
 {
     node q, r, j, t;
-    uchar c, far *t1, far *t2;
+    uchar c, *t1, *t2;
 
     if (matchlen >= 4)
     {
@@ -788,7 +788,7 @@ static void get_next_match (void)
  */
 
 static struct struct_mem_list {
-    void_far_pointer *p;
+    void_pointer *p;
     int size;
 } mem_list[] = {
     { &text      , DICSIZ * 2 + MAXMATCH                           },
@@ -882,22 +882,13 @@ int lzh_freeze (type_fnc_write  pfnc_read,
 }
 
 #ifdef __TEST__
-#ifdef __TURBOC__
-#include <io.h>
-#include <fcntl.h>
-#else
 #include <stdio.h>
-#endif
 #include <stdlib.h>
-int read0 (void far *p, int n) {return read (0, p, n);}
-int write1 (void far *p, int n) {return write (1, p, n);}
+int read0 (void *p, int n) {return read (0, p, n);}
+int write1 (void *p, int n) {return write (1, p, n);}
 void main (void)
 {
     long n;
-  #ifdef __TURBOC__  
-    setmode (0, O_BINARY);
-    setmode (1, O_BINARY);
-  #endif  
     n = lseek (0, 0, 2);
     write (1, &n, sizeof (n));
     lseek (0, 0, 0);

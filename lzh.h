@@ -25,10 +25,6 @@
 #ifndef LZH_H
 #define LZH_H
 
-#ifndef __TURBOC__
-#define far
-#endif
-
 typedef unsigned char  uchar;   /*  8 bits or more */
 typedef unsigned int   uint;    /* 16 bits or more */
 typedef unsigned short ushort;  /* 16 bits or more */
@@ -55,11 +51,11 @@ typedef unsigned long  ulong;   /* 32 bits or more */
 
 #define MAX_HASH_VAL (3 * DICSIZ + (DICSIZ / 512 + 1) * UCHAR_MAX)
 
-typedef void far * void_far_pointer;
-typedef int (*type_fnc_read) (void far *data, int n);
-typedef int (*type_fnc_write) (void far *data, int n);
-typedef void_far_pointer (*type_fnc_malloc) (unsigned n);
-typedef void (*type_fnc_free) (void far *p);
+typedef void * void_pointer;
+typedef int (*type_fnc_read) (void *data, int n);
+typedef int (*type_fnc_write) (void *data, int n);
+typedef void_pointer (*type_fnc_malloc) (unsigned n);
+typedef void (*type_fnc_free) (void *p);
 
 int lzh_freeze (type_fnc_read   pfnc_read,
                 type_fnc_write  pfnc_write,

@@ -36,13 +36,13 @@ static int with_error;
 
 #define BUFSIZE (1024 * 4)
 static int fillbufsize;
-static uchar far* buf;
+static uchar * buf;
 
 /*
  * io.c
  */
 
-static ushort far left [2 * NC - 1], far right[2 * NC - 1];
+static ushort left [2 * NC - 1], right[2 * NC - 1];
 
 static BITBUFTYPE bitbuf;
 static uint       subbitbuf;
@@ -90,8 +90,8 @@ static void init_getbits (void)
  * maketbl.c
  */
 
-static int make_table (int nchar, uchar far *bitlen,
-                       int tablebits, ushort far *table)
+static int make_table (int nchar, uchar *bitlen,
+                       int tablebits, ushort *table)
 {
     ushort count[17], weight[17], start[18], *p;
     uint i, k, len, ch, jutbits, avail, nextcode, mask;
@@ -176,9 +176,9 @@ static int make_table (int nchar, uchar far *bitlen,
     #define NPT NP
 #endif
 
-static uchar  far c_len[NC], far pt_len[NPT];
+static uchar  c_len[NC], pt_len[NPT];
 static uint   blocksize;
-static ushort far c_table[4096], far pt_table[256];
+static ushort c_table[4096], pt_table[256];
 
 static void read_pt_len (int nn, int nbit, int i_special)
 {
@@ -436,22 +436,13 @@ int lzh_melt (type_fnc_write  pfnc_read,
 }
 
 #ifdef __TEST__
-#ifdef __TURBOC__
-#include <io.h>
-#include <fcntl.h>
-#else
 #include <stdio.h>
-#endif
 #include <stdlib.h>
-int read0 (void far *p, int n) {return read (0, p, n);}
-int write1 (void far *p, int n) {return write (1, p, n);}
-void main (void)
+int read0 (void *p, int n) {return read (0, p, n);}
+int write1 (void *p, int n) {return write (1, p, n);}
+int main (void)
 {
     long n;
-  #ifdef __TURBOC__
-    setmode (0, O_BINARY);
-    setmode (1, O_BINARY);
-  #endif
     read (0, &n, sizeof (n));
     lzh_melt (read0, write1, malloc, free, n);
 }
